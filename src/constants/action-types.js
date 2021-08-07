@@ -1,1 +1,2 @@
-//export const FETCH_WALLETS = "FETCH_WALLETS";
+export const MAP = "MAP";
+export const DIRECTIONAL_RESPONSE = "DIRECTIONAL_RESPONSE";
