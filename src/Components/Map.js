@@ -2,7 +2,7 @@ import React, {useCallback, useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import { GoogleMap, useJsApiLoader} from '@react-google-maps/api';
 //import {stringify} from 'flatted';
-import { saveDirectionalResponse, loadMap } from '../actions';
+import { saveRoute, loadMap } from '../actions';
 import Inputs from './Inputs';
 import Directions from './Directions';
 
@@ -14,7 +14,7 @@ const containerStyle = {
 const mapStateToProps = state => {
     return { 
         map: state.map,
-        directionalResponse: state.directionalResponse,
+        route: state.route,
         origin: state.origin,
         destination: state.destination
     };
@@ -23,7 +23,7 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         loadMap: map => dispatch(loadMap(map)),
-        saveDirectionalResponse: directionalResponse => dispatch(saveDirectionalResponse(directionalResponse)),
+        saveRoute: route => dispatch(saveRoute(route)),
     };
 }
 
@@ -32,14 +32,7 @@ function Map(props) {
 
     const [position, setPosition] = useState({ lat: 5.51122, lng:  6.04821}) 
     const [map, setMap] = useState(props.map)
-    const [origin, setOrigin] = useState(props.origin)
-    const [destination, setDestination] = useState(props.destination)
-    const [search, setSearch] = useState(props.search)
 
-
-    console.log("states")
-    console.log(props.origin)
-    console.log(props.destination)
 
     //localStorage.setItem('map', stringify(map))
     const { isLoaded } = useJsApiLoader({
@@ -84,7 +77,6 @@ function Map(props) {
     setMap(null)
   }, [])
 
-  if(position === null) return <div>Must Allow Postion</div>
 
   return isLoaded ? (
 
@@ -97,10 +89,10 @@ function Map(props) {
         onUnmount={onUnmount}
         >
 
-        <Inputs setOrigin={setOrigin} setDestination={setDestination} setSearch={setSearch} />
+        <Inputs />
 
         {
-            (props.origin && props.destination) && <Directions origin={props.origin} destination={props.destination} /> 
+            (props.origin !== '' && props.destination !== '') && (<Directions origin={props.origin} destination={props.destination} /> ) 
         } 
 
     </GoogleMap>

@@ -1,37 +1,30 @@
 //import {parse} from 'flatted';
-import { MAP, DIRECTIONAL_RESPONSE, ORIGIN, DESTINATION } from "../constants/action-types";
+import { MAP, ROUTE, ORIGIN, DESTINATION } from "../constants/action-types";
 
 const initialState = {
    map: null,
-   directionalResponse: null,
-   origin: null,
-   destination: null,
+   route: null,
+   origin: '',
+   destination: '',
 };
   
 function rootReducer(state = initialState, action) {
 
-    let updatedState = {}
+    console.log("Action Type", action.type)
 
     switch (action.type) {
         case MAP:
-            updatedState = { ...state, map: action.payload }
-        break  
-        case DIRECTIONAL_RESPONSE:
-            updatedState = { ...state, directionalResponse: action.payload }
-        break  
+            return { ...state, map: action.payload }
+        case ROUTE:
+            return { ...state, route: action.payload } 
         case ORIGIN:
-            updatedState = { ...state, origin: action.payload }
-        break  
+            return { ...state, origin: action.payload }
         case DESTINATION:
-            updatedState = { ...state, destination: action.payload }
-        break  
+            return { ...state, destination: action.payload }
         default:
-            console.log("No")
+            return state
     }
 
-    console.log(updatedState)
-   
-    return updatedState;
 };
   
 

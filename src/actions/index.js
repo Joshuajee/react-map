@@ -1,13 +1,13 @@
-import { MAP, DIRECTIONAL_RESPONSE, ORIGIN, DESTINATION } from "../constants/action-types";
+import { MAP, ROUTE, ORIGIN, DESTINATION } from "../constants/action-types";
 
 export function loadMap(payload) {
   console.log("load map", payload)
   return { type: MAP, payload };
 }
 
-export function saveDirectionalResponse(payload) {
-  console.log("load directions", payload)
-  return { type: DIRECTIONAL_RESPONSE, payload };
+export function saveRoute(payload) {
+  console.log("load Route", payload)
+  return { type: ROUTE, payload };
 }
 
 export function saveOrigin(payload) {

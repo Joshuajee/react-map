@@ -1,33 +1,31 @@
-import { useState } from 'react';
 import {DirectionsRenderer, DirectionsService} from '@react-google-maps/api';
-import { saveDirectionalResponse} from '../actions';
+import { saveRoute} from '../actions';
 import {connect} from 'react-redux'
 
 const mapStateToProps = state => {
     return { 
-        directionalResponse: state.directionalResponse
+        route: state.route
     };
   };
   
   
 const mapDispatchToProps = dispatch => {
     return {
-        saveDirectionalResponse: directionalResponse => dispatch(saveDirectionalResponse(directionalResponse)),
+        saveRoute: route => dispatch(saveRoute(route)),
     };
 }
 
 const Directions = (props) => {
 
-    const [route, setRoute] = useState(null)
-
     function directionsCallback (response) {
-        console.log(response)
-    
+
         if (response !== null) {
             if (response.status === 'OK') {
-                props.saveDirectionalResponse(response)
-                setRoute(response)
-   
+                if(props.route === null) props.saveRoute(response)
+                else if (
+                    (response.request.destination.query !== props.route.request.destination.query) &&
+                    (response.request.origin.query !== props.route.request.origin.query)
+                ) props.saveRoute(response)
             } else {
                 console.log('response: ', response)
             }
@@ -52,10 +50,10 @@ const Directions = (props) => {
             />
                 {
                     
-                    route && (
+                    (props.route !== null) && (
                         <DirectionsRenderer
                             options={{ 
-                                directions: props.directionalResponse
+                                directions: props.route
                             }}
                             onLoad={directionsRenderer => {
                                 console.log('DirectionsRenderer onLoad directionsRenderer: ', directionsRenderer)
@@ -64,6 +62,7 @@ const Directions = (props) => {
                                 console.log('DirectionsRenderer onUnmount directionsRenderer: ', directionsRenderer)
                             }}
                     /> )
+                    
                 }
             
         </div>

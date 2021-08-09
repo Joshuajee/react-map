@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { useState } from "react";
-import { saveDestination, saveOrigin } from "../actions";
+import { saveDestination, saveOrigin, saveRoute } from "../actions";
 
 const mapStateToProps = state => {
     return { 
@@ -13,7 +13,8 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         saveOrigin: origin => dispatch(saveOrigin(origin)),
-        saveDestination: destination => dispatch(saveDestination(destination))
+        saveDestination: destination => dispatch(saveDestination(destination)),
+        saveRoute: route => dispatch(saveRoute(route)),
     };
 }
   
@@ -47,14 +48,9 @@ const Inputs = (props) => {
                 onClick={
 
                     () => {
-                        
                         props.saveOrigin(origin)
                         props.saveDestination(destination)
-                        props.setOrigin(origin)
-                        props.setDestination(destination)
-                        setOrigin(origin)
-                        setDestination(destination)
-                        //props.setSearch(true)
+                        props.saveRoute(null)
                     }
                 }
                 >Go
