@@ -1,20 +1,24 @@
 import React, {useCallback, useState, useEffect} from 'react'
 import {connect} from 'react-redux'
-import { GoogleMap, useJsApiLoader, DirectionsRenderer, DirectionsService} from '@react-google-maps/api';
+import { GoogleMap, useJsApiLoader} from '@react-google-maps/api';
+//import {stringify} from 'flatted';
 import { saveDirectionalResponse, loadMap } from '../actions';
+import Inputs from './Inputs';
+import Directions from './Directions';
 
 const containerStyle = {
   width: '100%',
-  height: '100vh'
+  height: '100vh',
 };
 
 const mapStateToProps = state => {
     return { 
         map: state.map,
-        directionalResponse: state.directionalResponse
+        directionalResponse: state.directionalResponse,
+        origin: state.origin,
+        destination: state.destination
     };
-  };
-  
+};
   
 const mapDispatchToProps = dispatch => {
     return {
@@ -22,33 +26,37 @@ const mapDispatchToProps = dispatch => {
         saveDirectionalResponse: directionalResponse => dispatch(saveDirectionalResponse(directionalResponse)),
     };
 }
-  
 
 
 function Map(props) {
 
-    function directionsCallback (response) {
-        console.log(response)
-    
-        if (response !== null) {
-          if (response.status === 'OK') {
-            props.saveDirectionalResponse(response)
-          } else {
-            console.log('response: ', response)
-          }
-        }
-      }
-
-    let [position, setPosition] = useState(null) 
+    const [position, setPosition] = useState({ lat: 5.51122, lng:  6.04821}) 
     const [map, setMap] = useState(props.map)
+    const [origin, setOrigin] = useState(props.origin)
+    const [destination, setDestination] = useState(props.destination)
+    const [search, setSearch] = useState(props.search)
 
-    console.log(map)
 
+    console.log("states")
+    console.log(props.origin)
+    console.log(props.destination)
+
+    //localStorage.setItem('map', stringify(map))
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
     })
 
+
+    /*
+    function onPlaceChanged () {
+        if (this.autocomplete !== null) {
+          console.log(this.autocomplete.getPlace())
+        } else {
+          console.log('Autocomplete is not loaded yet!')
+        }
+      }
+*/
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -65,7 +73,7 @@ function Map(props) {
     }, [props])
 
 
-  const onLoad = useCallback(function callback(map) {
+  const onLoad =  useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
     setMap(map)
@@ -79,50 +87,27 @@ function Map(props) {
   if(position === null) return <div>Must Allow Postion</div>
 
   return isLoaded ? (
-      <GoogleMap
+
+    <GoogleMap
         mapContainerStyle={containerStyle}
         center={position}
         clickableIcons={true}
         zoom={18}
         onLoad={onLoad}
         onUnmount={onUnmount}
-      >
-        <DirectionsService
-            // required
-            options={{ 
-            destination: 'Warri',
-            origin: 'Ughelli',
-            travelMode: 'DRIVING'
-            }}
-            // required
-            callback={directionsCallback}
-            // optional
-            onLoad={directionsService => {
-            console.log('DirectionsService onLoad directionsService: ', directionsService)
-            }}
-            // optional
-            onUnmount={directionsService => {
-            console.log('DirectionsService onUnmount directionsService: ', directionsService)
-            }}
-        />
+        >
 
-        <DirectionsRenderer
-            // required
-            options={{ 
-            directions: props.directionalResponse
-            }}
-            // optional
-            onLoad={directionsRenderer => {
-            console.log('DirectionsRenderer onLoad directionsRenderer: ', directionsRenderer)
-            }}
-            // optional
-            onUnmount={directionsRenderer => {
-            console.log('DirectionsRenderer onUnmount directionsRenderer: ', directionsRenderer)
-            }}
-        />
+        <Inputs setOrigin={setOrigin} setDestination={setDestination} setSearch={setSearch} />
 
-      </GoogleMap>
+        {
+            (props.origin && props.destination) && <Directions origin={props.origin} destination={props.destination} /> 
+        } 
+
+    </GoogleMap>
+
   ) : <div> Loading </div>
 }
 
 export default React.memo(connect(mapStateToProps, mapDispatchToProps)(Map))
+
+
