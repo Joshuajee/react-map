@@ -5,6 +5,7 @@ import { GoogleMap, useJsApiLoader} from '@react-google-maps/api';
 import { saveRoute, loadMap } from '../actions';
 import Inputs from './Inputs';
 import Directions from './Directions';
+import Search from './Search'
 
 const containerStyle = {
   width: '100%',
@@ -31,25 +32,15 @@ const mapDispatchToProps = dispatch => {
 function Map(props) {
 
     const [position, setPosition] = useState({ lat: 5.51122, lng:  6.04821}) 
-    const [map, setMap] = useState(props.map)
+    
+    const [, setMap] = useState(props.map)
 
 
-    //localStorage.setItem('map', stringify(map))
     const { isLoaded } = useJsApiLoader({
         id: 'google-map-script',
+        libraries: ['places'],
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
     })
-
-
-    /*
-    function onPlaceChanged () {
-        if (this.autocomplete !== null) {
-          console.log(this.autocomplete.getPlace())
-        } else {
-          console.log('Autocomplete is not loaded yet!')
-        }
-      }
-*/
 
     useEffect(() => {
         navigator.geolocation.getCurrentPosition(function(position) {
@@ -84,10 +75,12 @@ function Map(props) {
         mapContainerStyle={containerStyle}
         center={position}
         clickableIcons={true}
-        zoom={18}
+        zoom={15}
         onLoad={onLoad}
         onUnmount={onUnmount}
         >
+
+        
 
         <Inputs />
 

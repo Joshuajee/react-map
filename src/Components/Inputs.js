@@ -1,6 +1,7 @@
 import { connect } from "react-redux";
 import { useState } from "react";
 import { saveDestination, saveOrigin, saveRoute } from "../actions";
+import Search from "./Search";
 
 const mapStateToProps = state => {
     return { 
@@ -26,33 +27,23 @@ const Inputs = (props) => {
 
     return (
         <div className="inputs">
-            <input 
-                type="text" 
-                name="origin" 
-                placeholder="current location"
-                onChange={(e) => {
-                    setOrigin(e.target.value)
-                 } }
-                />
 
-            <input 
-                type="text" 
-                name="destination" 
+            <Search 
+                setPlace={setOrigin}
+                placeholder="Where are you now" />
+            <Search 
+                setPlace={setDestination}
                 placeholder="Where do you want to go"
-                onChange={(e) => {
-                    setDestination(e.target.value)
-                } }
                 />
 
             <button
                 onClick={
-
-                    () => {
-                        props.saveOrigin(origin)
-                        props.saveDestination(destination)
-                        props.saveRoute(null)
-                    }
-                }
+                            () => {
+                                props.saveOrigin(origin)
+                                props.saveDestination(destination)
+                                props.saveRoute(null)
+                            }
+                        }
                 >Go
             </button>
         </div>
