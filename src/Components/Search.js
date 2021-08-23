@@ -35,6 +35,7 @@ const Search = (props) => {
         <input
             type="text"
             placeholder={props.placeholder}
+            defaultValue={props.defaultValue}
         />
 
         </Autocomplete>

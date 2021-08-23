@@ -1,19 +1,22 @@
 .inputs {
   position: absolute;
   top: 6vh;
-  left: 10%;
-  right: 10%;
-  width: 80%;
-  height: 20%;
+  left: 8%;
+  right: 8%;
+  width: 84%;
+  height: 25%;
   padding: 1%;
   z-index: 10;
+  background-color: white;
 }
 
 .inputs input {
-  width: 100%;
+  left: 4%;
+  right: 4%;
+  width: 92%;
   height: 50px;
-  margin-top: 2vh;
-  margin-bottom: 2vh;
+  margin-top: 0.5vh;
+  margin-bottom: 0,5vh;
   box-sizing: border-box;
   border: 1px solid transparent;
   padding: 0 12px;
@@ -23,4 +26,24 @@
   outline: none;
   text-overflow: ellipses;
   position: relative;
+}
+
+.inputs .btn {
+  left: 4%;
+  right: 4%;
+  width: 92%;
+  height: 50px;
+  margin-top: 0.5vh;
+  margin-bottom: 0,5vh;
+  box-sizing: border-box;
+  border: 1px solid transparent;
+  padding: 0 12px;
+  border-radius: 3px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+  font-size: 14px;
+  outline: none;
+  text-overflow: ellipses;
+  position: relative;
+  background-color:green;
+  color: white;
 }

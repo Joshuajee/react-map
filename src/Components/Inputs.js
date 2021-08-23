@@ -30,13 +30,14 @@ const Inputs = (props) => {
 
             <Search 
                 setPlace={setOrigin}
-                placeholder="Where are you now" />
+                placeholder="Where are you now"
+                defaultValue={props.origin} />
             <Search 
                 setPlace={setDestination}
                 placeholder="Where do you want to go"
                 />
 
-            <button
+            <button className="btn"
                 onClick={
                             () => {
                                 props.saveOrigin(origin)

@@ -2,10 +2,12 @@ import React, {useCallback, useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import { GoogleMap, useJsApiLoader} from '@react-google-maps/api';
 //import {stringify} from 'flatted';
-import { saveRoute, loadMap } from '../actions';
+import { saveRoute, loadMap, saveOrigin } from '../actions';
 import Inputs from './Inputs';
 import Directions from './Directions';
 import Search from './Search'
+
+import addressFromCoordinate from './geocode'
 
 const containerStyle = {
   width: '100%',
@@ -25,6 +27,7 @@ const mapDispatchToProps = dispatch => {
     return {
         loadMap: map => dispatch(loadMap(map)),
         saveRoute: route => dispatch(saveRoute(route)),
+        saveOrigin: origin => dispatch(saveOrigin(origin)),
     };
 }
 
@@ -51,10 +54,12 @@ function Map(props) {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
+            addressFromCoordinate(location.lat, location.lng, props.saveOrigin)
 
             setPosition(location)
+            props.saveOrigin(location)
           });
-    }, [props])
+    }, [])
 
 
   const onLoad =  useCallback(function callback(map) {
@@ -82,7 +87,7 @@ function Map(props) {
 
         
 
-        <Inputs />
+        <Inputs  origin={props.origin} />
 
         {
             (props.origin !== '' && props.destination !== '') && (<Directions origin={props.origin} destination={props.destination} /> ) 
