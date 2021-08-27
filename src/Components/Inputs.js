@@ -1,6 +1,6 @@
 import { connect } from "react-redux";
 import { useState } from "react";
-import { saveDestination, saveOrigin, saveRoute } from "../actions";
+import { saveDestination, saveOrigin, saveRoute } from "../redux/actions";
 import Search from "./Search";
 
 const mapStateToProps = state => {
@@ -40,7 +40,7 @@ const Inputs = (props) => {
             <button className="btn"
                 onClick={
                             () => {
-                                props.saveOrigin(origin)
+                                props.saveOrigin(origin === '' ? props.origin : origin)
                                 props.saveDestination(destination)
                                 props.saveRoute(null)
                             }

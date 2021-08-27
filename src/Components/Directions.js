@@ -1,5 +1,5 @@
 import {DirectionsRenderer, DirectionsService} from '@react-google-maps/api';
-import { saveRoute} from '../actions';
+import { saveRoute} from '../redux/actions';
 import {connect} from 'react-redux'
 
 const mapStateToProps = state => {

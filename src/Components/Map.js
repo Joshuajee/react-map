@@ -1,13 +1,10 @@
 import React, {useCallback, useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import { GoogleMap, useJsApiLoader} from '@react-google-maps/api';
-//import {stringify} from 'flatted';
-import { saveRoute, loadMap, saveOrigin } from '../actions';
+import {loadMap, saveOrigin } from '../redux/actions';
 import Inputs from './Inputs';
 import Directions from './Directions';
-import Search from './Search'
-
-import addressFromCoordinate from './geocode'
+import addressFromCoordinate from './geocode';
 
 const containerStyle = {
   width: '100%',
@@ -17,7 +14,6 @@ const containerStyle = {
 const mapStateToProps = state => {
     return { 
         map: state.map,
-        route: state.route,
         origin: state.origin,
         destination: state.destination
     };
@@ -26,7 +22,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         loadMap: map => dispatch(loadMap(map)),
-        saveRoute: route => dispatch(saveRoute(route)),
         saveOrigin: origin => dispatch(saveOrigin(origin)),
     };
 }
@@ -34,40 +29,57 @@ const mapDispatchToProps = dispatch => {
 
 function Map(props) {
 
-    const [position, setPosition] = useState({ lat: 5.51122, lng:  6.04821}) 
+  const {saveOrigin, origin, destination, loadMap, map} = props
+
+  const [position, setPosition] = useState({ lat: 5.51122, lng:  6.04821}) 
+  
+  const [, setMap] = useState(map)
+
+
+  const { isLoaded } = useJsApiLoader({
+      id: 'google-map-script',
+      libraries: ['places', 'geometry'],
+      googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
+  })
+
+
+  //get initial position
+  useEffect(() => {
     
-    const [, setMap] = useState(props.map)
+    navigator.geolocation.getCurrentPosition(function(position) {
+      
+      console.log("Latitude is :", position.coords.latitude)
+      console.log("Longitude is :", position.coords.longitude)
 
+      const location = { lat: position.coords.latitude, lng: position.coords.longitude }
 
-    const { isLoaded } = useJsApiLoader({
-        id: 'google-map-script',
-        libraries: ['places'],
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_API_KEY
+      addressFromCoordinate (location.lat, location.lng, saveOrigin)
+      setPosition(location)
     })
+  }, [saveOrigin])
 
-    useEffect(() => {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            console.log("Latitude is :", position.coords.latitude);
-            console.log("Longitude is :", position.coords.longitude);
+  //watch position
+  useEffect(() => {
+    
+    navigator.geolocation.watchPosition(function(position) {
+      
+      console.log("Latitude is :", position.coords.latitude)
+      console.log("Longitude is :", position.coords.longitude)
 
-            const location = {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude
-            };
-            addressFromCoordinate(location.lat, location.lng, props.saveOrigin)
+      const location = { lat: position.coords.latitude, lng: position.coords.longitude }
 
-            setPosition(location)
-            props.saveOrigin(location)
-          });
-    }, [])
-
+      //addressFromCoordinate (location.lat, location.lng, saveOrigin)
+      console.log("Pos: " + position.coords.latitude)
+      setPosition(location)
+    })
+  }, [saveOrigin])
 
   const onLoad =  useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
     setMap(map)
-    props.loadMap(map)
-  }, [props])
+    loadMap(map)
+  }, [loadMap])
 
   const onUnmount = useCallback(function callback(map) {
     setMap(null)
@@ -77,23 +89,21 @@ function Map(props) {
   return isLoaded ? (
 
     <GoogleMap
-        mapContainerStyle={containerStyle}
-        center={position}
-        clickableIcons={true}
-        zoom={15}
-        onLoad={onLoad}
-        onUnmount={onUnmount}
-        >
+      mapContainerStyle={containerStyle}
+      center={position}
+      clickableIcons={true}
+      zoom={15}
+      onLoad={onLoad}
+      onUnmount={onUnmount}
+      >
 
-        
+      <Inputs origin={origin} />
 
-        <Inputs  origin={props.origin} />
+      {
+        (origin !== '' && destination !== '') && (<Directions origin={origin} destination={destination} /> ) 
+      } 
 
-        {
-            (props.origin !== '' && props.destination !== '') && (<Directions origin={props.origin} destination={props.destination} /> ) 
-        } 
-
-    </GoogleMap>
+  </GoogleMap>
 
   ) : <div> Loading </div>
 }

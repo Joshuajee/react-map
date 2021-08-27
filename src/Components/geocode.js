@@ -25,7 +25,6 @@ Geocode.setLocationType("ROOFTOP");
 const addressFromCoordinate = (latitude, longitude, setOrigin) => Geocode.fromLatLng(longitude, latitude).then(
   (response) => {
     const address = response.results[0].formatted_address;
-    console.log(address);
     setOrigin(address)
   },
   (error) => {
