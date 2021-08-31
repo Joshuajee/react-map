@@ -1,6 +1,11 @@
-import {DirectionsRenderer, DirectionsService} from '@react-google-maps/api';
+import {
+    DirectionsRenderer, 
+    DirectionsService, 
+    TrafficLayer
+} from '@react-google-maps/api';
 import { saveRoute} from '../redux/actions';
 import {connect} from 'react-redux'
+import Distance from './Distance';
 
 const mapStateToProps = state => {
     return { 
@@ -16,6 +21,10 @@ const mapDispatchToProps = dispatch => {
 }
 
 const Directions = (props) => {
+
+    const onLoad = trafficLayer => {
+        console.log('trafficLayer: ', trafficLayer)
+      }
 
     function directionsCallback (response) {
 
@@ -36,16 +45,16 @@ const Directions = (props) => {
         <div>
             <DirectionsService
                 options={{ 
-                destination: props.destination,
-                origin: props.origin,
-                travelMode: 'DRIVING'
+                    destination: props.destination,
+                    origin: props.origin,
+                    travelMode: 'DRIVING'
                 }}
                 callback={directionsCallback}
                 onLoad={directionsService => {
-                console.log('DirectionsService onLoad directionsService: ', directionsService)
+                    console.log('DirectionsService onLoad directionsService: ', directionsService)
                 }}
                 onUnmount={directionsService => {
-                console.log('DirectionsService onUnmount directionsService: ', directionsService)
+                    console.log('DirectionsService onUnmount directionsService: ', directionsService)
                 }}
             />
                 {
@@ -61,10 +70,16 @@ const Directions = (props) => {
                             onUnmount={directionsRenderer => {
                                 console.log('DirectionsRenderer onUnmount directionsRenderer: ', directionsRenderer)
                             }}
-                    /> )
+                    />
+                    
+                    )
                     
                 }
-            
+
+            <TrafficLayer onLoad={onLoad} />
+
+            <Distance />
+
         </div>
     )
 }

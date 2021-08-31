@@ -8,7 +8,7 @@ Geocode.setLanguage("en");
 
 // set response region. Its optional.
 // A Geocoding request with region=es (Spain) will return the Spanish city.
-//Geocode.setRegion("es");
+Geocode.setRegion(process.env.REACT_APP_GOOGLE_REGION);
 
 // set location_type filter . Its optional.
 // google geocoder returns more that one address for given lat/lng.
@@ -22,62 +22,34 @@ Geocode.setLocationType("ROOFTOP");
 //Geocode.enableDebug();
 
 // Get address from latitude & longitude.
-const addressFromCoordinate = (latitude, longitude, setOrigin) => Geocode.fromLatLng(longitude, latitude).then(
+const addressFromCoordinate = (latitude, longitude, setData) => Geocode.fromLatLng(latitude, longitude).then(
   (response) => {
     const address = response.results[0].formatted_address;
-    setOrigin(address)
+    setData(address)
   },
   (error) => {
     console.error(error);
-    setOrigin("")
+    setData("")
   }
 );
 
 // Get formatted address, city, state, country from latitude & longitude when
 // Geocode.setLocationType("ROOFTOP") enabled
-// the below parser will work for most of the countries
+// the below parser will work for most of the countrie
 
-/*
-Geocode.fromLatLng("48.8583701", "2.2922926").then(
-  (response) => {
-    const address = response.results[0].formatted_address;
-    let city, state, country;
-    for (let i = 0; i < response.results[0].address_components.length; i++) {
-      for (let j = 0; j < response.results[0].address_components[i].types.length; j++) {
-        switch (response.results[0].address_components[i].types[j]) {
-          case "locality":
-            city = response.results[0].address_components[i].long_name;
-            break;
-          case "administrative_area_level_1":
-            state = response.results[0].address_components[i].long_name;
-            break;
-          case "country":
-            country = response.results[0].address_components[i].long_name;
-            break;
-        }
-      }
-    }
-    console.log(city, state, country);
-    console.log(address);
-    alert(address)
-  },
-  (error) => {
-    console.error(error);
-  }
-);
 
-/*
 // Get latitude & longitude from address.
-Geocode.fromAddress("Eiffel Tower").then(
+const coordinateFromAddress = (address, setData) => Geocode.fromAddress(address).then(
   (response) => {
     const { lat, lng } = response.results[0].geometry.location;
     console.log(lat, lng);
+    setData({lat:lat, lng:lng})
   },
   (error) => {
     console.error(error);
   }
 );
 
-*/
 
 export default addressFromCoordinate
+export {coordinateFromAddress}

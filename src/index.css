@@ -1,10 +1,10 @@
 .inputs {
   position: absolute;
-  top: 6vh;
+  top: 60px;
   left: 8%;
   right: 8%;
   width: 84%;
-  height: 25%;
+  height: 160px;
   padding: 1%;
   z-index: 10;
   background-color: white;
@@ -13,10 +13,10 @@
 .inputs input {
   left: 4%;
   right: 4%;
-  width: 92%;
+  width: 92% !important;
   height: 50px;
   margin-top: 0.5vh;
-  margin-bottom: 0,5vh;
+  margin-bottom: 0.5vh;
   box-sizing: border-box;
   border: 1px solid transparent;
   padding: 0 12px;
