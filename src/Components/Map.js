@@ -40,7 +40,9 @@ function Map(props) {
 
   const [position, setPosition] = useState(null) 
   const [currentPosition, setCurrentPosition] = useState(null)
-  
+  const [originLatLng, setOriginLatLng] = useState(null) 
+  const [destinationLatLng, setDestinationLatLng] = useState(null)
+
   const [, setMap] = useState(map)
 
 
@@ -86,9 +88,11 @@ function Map(props) {
   }, [saveOrigin])
 
   useEffect(()=> {
-    if(!origin)
+    if(!origin) {
       saveOrigin(currentPosition)
-  }, [currentPosition, saveOrigin, origin])
+      setOriginLatLng(position)
+    }
+  }, [currentPosition, saveOrigin, origin, position])
 
  
   const onLoad =  useCallback(function callback(map) {
@@ -120,9 +124,11 @@ function Map(props) {
         switch (choose) {
           case ORIGIN:
             addressFromCoordinate (position.lat, position.lng, saveOrigin)
+            setOriginLatLng(position)
           break
           case DESTINATION:
             addressFromCoordinate (position.lat, position.lng, saveDestination)
+            setDestinationLatLng(position)
           break
           default:
             console.log(choose)
@@ -136,6 +142,9 @@ function Map(props) {
       {
         (origin !== '' && destination !== '') && (<Directions origin={origin} destination={destination} /> ) 
       } 
+
+      { (originLatLng && <MarkPosition position={originLatLng} />) }
+      { (destinationLatLng && <MarkPosition position={destinationLatLng} />) }
 
       { (position && <MarkPosition position={position}  user/>) }
 
