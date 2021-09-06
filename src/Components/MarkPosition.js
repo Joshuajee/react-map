@@ -8,11 +8,10 @@ const MarkPosition = (props) => {
     console.log('marker: ', marker)
   }
 
-    return (<Marker
-              onLoad={onLoad} 
-              position={props.position}
-              draggable={props.draggable} 
-              />)
+  if (props.user) 
+      return (<Marker onLoad={onLoad} position={props.position} draggable={props.draggable} icon={position} />)
+
+  return (<Marker onLoad={onLoad}  position={props.position} draggable={props.draggable} />)
 }
 
 export default MarkPosition

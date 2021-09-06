@@ -5,3 +5,4 @@ export const ORIGIN = "ORIGIN";
 export const DESTINATION = "DESTINATION";
 export const DISTANCE = "DISTANCE";
 export const TIME = "TIME";
+export const CHOOSE= "CHOOSE";

@@ -1,4 +1,4 @@
-import { MAP, ROUTE, ORIGIN, DESTINATION, DISTANCE, TIME } from "../constants/action-types";
+import { MAP, ROUTE, ORIGIN, DESTINATION, DISTANCE, TIME, CHOOSE } from "../constants/action-types";
 
 export function loadMap(payload) {
   console.log("load map", payload)
@@ -28,4 +28,9 @@ export function saveDistance(payload) {
 export function saveTime(payload) {
   console.log("save time", payload)
   return { type: TIME, payload };
+}
+
+export function setChoose(payload) {
+  console.log("setChoose", payload)
+  return { type: CHOOSE, payload };
 }

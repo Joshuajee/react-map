@@ -1,11 +1,12 @@
 import React, {useCallback, useState, useEffect} from 'react'
 import {connect} from 'react-redux'
 import { GoogleMap, useJsApiLoader} from '@react-google-maps/api';
-import {loadMap, saveOrigin } from '../redux/actions';
+import {loadMap, saveOrigin, saveDestination, saveRoute } from '../redux/actions';
 import Inputs from './Inputs';
 import Directions from './Directions';
 import addressFromCoordinate from './geocode';
 import MarkPosition from './MarkPosition';
+import { DESTINATION, ORIGIN } from '../redux/constants/action-types';
 
 const libraries = ['places']
 
@@ -18,23 +19,27 @@ const mapStateToProps = state => {
     return { 
         map: state.map,
         origin: state.origin,
-        destination: state.destination
+        destination: state.destination,
+        choose: state.choose
     };
 };
   
 const mapDispatchToProps = dispatch => {
     return {
-        loadMap: map => dispatch(loadMap(map)),
-        saveOrigin: origin => dispatch(saveOrigin(origin)),
+      loadMap: map => dispatch(loadMap(map)),
+      saveOrigin: origin => dispatch(saveOrigin(origin)),
+      saveDestination: destination => dispatch(saveDestination(destination)),
+      saveRoute: route => dispatch(saveRoute(route)),
     };
 }
 
 
 function Map(props) {
 
-  const {saveOrigin, origin, destination, loadMap, map} = props
+  const {saveOrigin, origin, saveDestination, destination, choose, loadMap, map} = props
 
   const [position, setPosition] = useState(null) 
+  const [currentPosition, setCurrentPosition] = useState(null)
   
   const [, setMap] = useState(map)
 
@@ -57,7 +62,7 @@ function Map(props) {
 
       const location = { lat: position.coords.latitude, lng: position.coords.longitude }
 
-      addressFromCoordinate (location.lat, location.lng, saveOrigin)
+      addressFromCoordinate (location.lat, location.lng, setCurrentPosition)
       
       setPosition(location)
     }, error => {
@@ -80,18 +85,15 @@ function Map(props) {
     })
   }, [saveOrigin])
 
+  useEffect(()=> {
+    if(!origin)
+      saveOrigin(currentPosition)
+  }, [currentPosition, saveOrigin, origin])
 
  
   const onLoad =  useCallback(function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
     map.fitBounds(bounds);
-    /*
-    let infoWindow = new window.google.maps.InfoWindow({
-      content: "Click the map to get Lat/Lng!",
-      position: position,
-    });
-    infoWindow.open(map);
-    */
     setMap(map)
     loadMap(map)
   }, [loadMap])
@@ -105,21 +107,37 @@ function Map(props) {
     <GoogleMap
       mapContainerStyle={containerStyle}
       center={position}
-      clickableIcons={true}
       zoom={20}
       onLoad={onLoad}
       onUnmount={onUnmount}
-      onClick= {(e) => console.log(e) }
+      onClick= {(e) => {
+        
+        const position = e.latLng.toJSON()
+        console.log(position)
+
+        props.saveRoute(null)
+
+        switch (choose) {
+          case ORIGIN:
+            addressFromCoordinate (position.lat, position.lng, saveOrigin)
+          break
+          case DESTINATION:
+            addressFromCoordinate (position.lat, position.lng, saveDestination)
+          break
+          default:
+            console.log(choose)
+        }
+      }}
       region= {process.env.REACT_APP_GOOGLE_REGION}
       >
 
-      <Inputs origin={origin} />
+      <Inputs origin={origin} destination={destination} />
 
       {
         (origin !== '' && destination !== '') && (<Directions origin={origin} destination={destination} /> ) 
       } 
 
-      { (position && <MarkPosition position={position} />) }
+      { (position && <MarkPosition position={position}  user/>) }
 
   </GoogleMap>
 

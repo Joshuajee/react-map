@@ -1,4 +1,3 @@
-//import {parse} from 'flatted';
 import { 
     MAP, 
     ROUTE, 
@@ -6,7 +5,8 @@ import {
     ORIGIN, 
     DESTINATION, 
     DISTANCE, 
-    TIME } from "../constants/action-types";
+    TIME,
+    CHOOSE } from "../constants/action-types";
 
 const initialState = {
    map: null,
@@ -15,7 +15,8 @@ const initialState = {
    origin: '',
    destination: '',
    distance: '',
-   time: ''
+   time: '',
+   choose: '',
 };
   
 function rootReducer(state = initialState, action) {
@@ -37,6 +38,8 @@ function rootReducer(state = initialState, action) {
             return { ...state, distance: action.payload }
         case TIME:
             return { ...state, time: action.payload }
+        case CHOOSE:
+            return { ...state, choose: action.payload }
         default:
             return state
     }
